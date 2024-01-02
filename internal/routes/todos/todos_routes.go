@@ -10,7 +10,10 @@ func TodosRoute(api fiber.Router){
 	todoRoutes := api.Group("/todos")
 	// create todo route
 	todoRoutes.Post("/",middleware.UserAuthMiddleWare(Todo.CreateTodo))
-	// Get todo route
+	// Get todo List route
 	todoRoutes.Get("/",middleware.UserAuthMiddleWare(Todo.GetTodoList))
-	
+	// Get todo route
+	todoRoutes.Get("/:todoId",middleware.UserAuthMiddleWare(Todo.GetTodo))
+	//Update route
+	todoRoutes.Put("/:todoId",middleware.UserAuthMiddleWare(Todo.UpdateTodo))
 }
