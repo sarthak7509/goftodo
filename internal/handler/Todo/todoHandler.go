@@ -44,11 +44,15 @@ func GetTodoList(c *fiber.Ctx, user models.User) error {
 	return c.Status(200).JSON(fiber.Map{"data": models.ListOfTodos(todos)})
 }
 
-func GetTodo(c *fiber.Ctx,user models.User) error{
+func GetTodo(c *fiber.Ctx, user models.User) error {
 	db := database.DB
 	id := c.Params("todoId")
 	var todo models.Todo
-	err := db.Find(&todo,"id=?",id).Error
+	err := db.Find(&todo, "id=?", id).Error
+
+	if todo.ID == uuid.Nil {
+		return c.Status(404).JSON(fiber.Map{"status": "error", "message": "No Todo present", "data": nil})
+	}
 
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err})
@@ -56,7 +60,7 @@ func GetTodo(c *fiber.Ctx,user models.User) error{
 	return c.Status(200).JSON(fiber.Map{"data": models.TodoGetResponse(todo)})
 }
 
-func UpdateTodo(c *fiber.Ctx,user models.User) error{
+func UpdateTodo(c *fiber.Ctx, user models.User) error {
 	db := database.DB
 
 	payload := new(models.TodoCreatePayload)
@@ -66,10 +70,13 @@ func UpdateTodo(c *fiber.Ctx,user models.User) error{
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err})
 	}
 
-
 	id := c.Params("todoId")
 	var todo models.Todo
-	err = db.Find(&todo,"id=?",id).Error
+	err = db.Find(&todo, "id=?", id).Error
+
+	if todo.ID == uuid.Nil {
+		return c.Status(404).JSON(fiber.Map{"status": "error", "message": "No Todo present", "data": nil})
+	}
 
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err})
@@ -84,4 +91,23 @@ func UpdateTodo(c *fiber.Ctx,user models.User) error{
 	db.Save(&todo)
 
 	return c.Status(200).JSON(fiber.Map{"data": models.TodoGetResponse(todo)})
+}
+
+func DeleteTodo(c *fiber.Ctx, user models.User) error {
+	db := database.DB
+	id := c.Params("todoId")
+	var todo models.Todo
+	err := db.Find(&todo, "id=?", id).Error
+
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err})
+	}
+
+	err = db.Delete(&todo).Error
+
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err})
+	}
+
+	return c.SendStatus(200)
 }

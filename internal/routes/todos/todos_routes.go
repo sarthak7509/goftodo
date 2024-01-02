@@ -6,14 +6,16 @@ import (
 	"github.com/sarthak7509/goftodo/internal/middleware"
 )
 
-func TodosRoute(api fiber.Router){
+func TodosRoute(api fiber.Router) {
 	todoRoutes := api.Group("/todos")
 	// create todo route
-	todoRoutes.Post("/",middleware.UserAuthMiddleWare(Todo.CreateTodo))
+	todoRoutes.Post("/", middleware.UserAuthMiddleWare(Todo.CreateTodo))
 	// Get todo List route
-	todoRoutes.Get("/",middleware.UserAuthMiddleWare(Todo.GetTodoList))
+	todoRoutes.Get("/", middleware.UserAuthMiddleWare(Todo.GetTodoList))
 	// Get todo route
-	todoRoutes.Get("/:todoId",middleware.UserAuthMiddleWare(Todo.GetTodo))
+	todoRoutes.Get("/:todoId", middleware.UserAuthMiddleWare(Todo.GetTodo))
 	//Update route
-	todoRoutes.Put("/:todoId",middleware.UserAuthMiddleWare(Todo.UpdateTodo))
+	todoRoutes.Put("/:todoId", middleware.UserAuthMiddleWare(Todo.UpdateTodo))
+	//Delete route
+	todoRoutes.Delete("/:todoId", middleware.UserAuthMiddleWare(Todo.DeleteTodo))
 }
