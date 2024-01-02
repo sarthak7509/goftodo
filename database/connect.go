@@ -30,7 +30,7 @@ func Connect() {
 		log.Fatalf("Something going wrong: %v\n", err)
 		panic("Could not connect to database")
 	}
-	DB.AutoMigrate(&models.User{})
+	DB.AutoMigrate(&models.User{}, &models.Todo{})
 	log.Printf("connected to database successfully. %v", DB.Name())
 
 }
