@@ -5,6 +5,7 @@ import (
 	"gorm.io/gorm"
 )
 
+//Model
 type Todo struct {
 	gorm.Model
 	ID             uuid.UUID `gorm:"PrimaryKey"`

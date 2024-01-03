@@ -37,7 +37,13 @@ func CreateTodo(c *fiber.Ctx, user models.User) error {
 func GetTodoList(c *fiber.Ctx, user models.User) error {
 	db := database.DB
 	var todos []models.Todo
-	err := db.Find(&todos, "user_id=?", user.Id).Error
+	priority := c.QueryInt("priority")
+	var err error
+	if priority != 0 {
+		err = db.Find(&todos, "user_id=? AND priority=?", user.Id,priority).Error
+	}else{
+		err = db.Find(&todos, "user_id=?", user.Id).Error
+	}
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err})
 	}
